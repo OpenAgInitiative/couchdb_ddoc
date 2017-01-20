@@ -1,3 +1,9 @@
 {
-  "_id": "_design/app"
+  "_id": "_design/app",
+  "views": {},
+  "shows": {},
+  "lists": {},
+  "filters": {},
+  "rewrites": {},
+  "_attachments": "_attachments"
 }
