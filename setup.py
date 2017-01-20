@@ -6,13 +6,13 @@ with open(readme_path) as f:
     readme = f.read()
 
 setup(
-    name='couchtools',
+    name='couchdb_ddoc',
     version='0.0.1',
     author='OpenAgricultureInitiative',
     description='Command line utility for working with CouchDB design documents',
     long_description=readme,
     license="GPL-3.0",
-    url="https://github.com/OpenAgInitiative/couchtools",
+    url="https://github.com/OpenAgInitiative/couchdb_ddoc",
     classifiers=[
         "Development Status :: 3 - Alpha",
         "Intended Audience :: Developers",
@@ -26,7 +26,7 @@ setup(
     include_package_data=True,
     entry_points={
         'console_scripts': [
-            'couchtools_load_fixture=couchtools:cli_load_fixture'
+            'ddoc_load_fixture=ddoc:cli_load_fixture'
         ]
     }
 )

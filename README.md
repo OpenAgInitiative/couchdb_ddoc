@@ -1,2 +1,3 @@
 # couchdb_ddoc
-Easily push design documents into couchdb
+
+Easily push design documents into CouchDB. 
