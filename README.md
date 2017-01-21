@@ -54,7 +54,7 @@ You could create the following manifest file:
     "my_filter": "filters/my_filter.js"
   },
   "_attachments": {
-    "path": "_attachments/"
+    "path": "_attachments/",
     "ignore": [".DS_Store", "*.psd"]
   }
 }
