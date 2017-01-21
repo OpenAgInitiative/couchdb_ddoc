@@ -3,6 +3,8 @@ import json
 import argparse
 import os
 from couchdb import Database, ResourceNotFound
+from fnmatch import fnmatch
+import re
 
 parser = argparse.ArgumentParser(
     description="""
@@ -56,17 +58,48 @@ def walk_files(path):
         for filepath in files:
             yield os.path.join(dirpath, filepath)
 
-def path_split_top(path):
-    i = path.find("/")
-    return path[0:i], path[i + 1:]
+def fnmatch_any(filename, patterns):
+    """
+    Match a filename to a list of unix glob patterns. If any of the patterns
+    match, return True
+    """
+    basename = os.path.basename(filename)
+    for pattern in patterns:
+        if fnmatch(basename, pattern):
+            return True
+    return False
 
-def attach_all(db, doc_id, attachments):
-    """Attach a dict of attachments to a document"""
+def find_files(path, match=None, ignore=None):
+    """
+    Find files recursively, filtering the result with optional match
+    and ignore arrays. Matches and ignores are unix-style glob patterns
+    and applied at every level as we recursively walk for files.
+    Returns a generator.
+    """
+    filepaths = walk_files(path)
+    if match:
+        filepaths = (fp for fp in filepaths if fnmatch_any(fp, match))
+    if ignore:
+        filepaths = (fp for fp in filepaths if not fnmatch_any(fp, ignore))
+    return filepaths
+
+def re_root_path(root, path):
+    """Remove root of path (if any) from path"""
+    return re.sub("^{}/?".format(root), "", path)
+
+def attach_all(db, doc_id, attachments, root=""):
+    """
+    Attach a dict of attachments to a document.
+
+    Optional:
+    root - a path string for the head of the path. This head will
+    be removed from the attachment's file path.
+    """
     for filepath in attachments:
         with open(filepath, "r") as f:
             doc = db[doc_id]
-            head, rest = path_split_top(filepath)
-            db.put_attachment(doc, content=f, filename=rest)
+            attachment_filepath = re_root_path(root, filepath)
+            db.put_attachment(doc, content=f, filename=attachment_filepath)
 
 def read_entire_file(filepath):
     """
@@ -116,8 +149,9 @@ def put_fixture(db, fixture):
         doc["validate_doc_update"] = validate_doc_update
     db.save(doc)
     try:
-        attachment_files = walk_files(fixture["_attachments"])
-        attach_all(db, doc["_id"], attachment_files)
+        root = fixture["_attachments"]["path"]
+        attachment_files = find_files(**fixture["_attachments"])
+        attach_all(db, doc["_id"], attachment_files, root=root)
     except KeyError:
         pass
 

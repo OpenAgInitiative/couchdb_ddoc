@@ -5,5 +5,8 @@
   "lists": {},
   "filters": {},
   "rewrites": {},
-  "_attachments": "_attachments"
+  "_attachments": {
+    "path": "_attachments",
+    "ignore": [".*"]
+  }
 }

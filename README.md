@@ -13,7 +13,7 @@ ddoc_load_fixture http://mycouch:5984/app couchapp.json
 `.json` manifest files look just like [CouchDB Design Documents](http://docs.couchdb.org/en/2.0.0/couchapp/ddocs.html), with a small difference:
 
 - views, shows, lists, and filters can point to `.js` files. The contents of the files will be loaded and appended as stringified functions.
-- `_attachments` can point to a directory. The directory will be recursively searched and all files added as attachments.
+- `_attachments` is an object with a `path` and optional `match` and `ignore` fields. The directory will be recursively searched and all files added as attachments. The optional `match` and `ignore` fields are an array of Unix-glob-like patterns that can be used to filter the list of files. The `path` directory name will be treated as the root path.
 
 For example, to load a project with this directory structure:
 
@@ -53,7 +53,10 @@ You could create the following manifest file:
   "filters": {
     "my_filter": "filters/my_filter.js"
   },
-  "_attachments": "_attachments/"
+  "_attachments": {
+    "path": "_attachments/"
+    "ignore": [".DS_Store", "*.psd"]
+  }
 }
 ```
 
