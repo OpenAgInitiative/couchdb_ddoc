@@ -1,4 +1,6 @@
-# couchdb_ddoc
+# DEPRECATED.
+
+## couchdb_ddoc
 
 Easily push design documents into CouchDB. Useful for deploying static webapps as [CouchApps](http://docs.couchdb.org/en/2.0.0/couchapp/index.html)!
 
